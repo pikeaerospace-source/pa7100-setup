@@ -1,0 +1,62 @@
+# C
+*.o
+*.elf
+*.hex
+*.map
+*.srec
+*.s19
+*.csv
+*.exe 
+*-setup
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Cook build system
+.build-kind
+.feature
+.target
+
+#IDE
+.vsode
+
+# release 
+release 
+
+#nfs
+.nfs*
+
+# temp files
+*.tmp
+*.bak
+*.swp
+*.log
+*.aux
+*.out
+*.toc
+*.gz
+*.lof
+
+
+# Qt Creator
+*.pro.user*
+*.qrc~
+*.moc
+*.obj
+*.rcc
+*.pch
+*.user
+*.layout
+*.autosave
+moc_*.cpp
+moc_*.h
+ui_*.h
+Makefile
+*.pro.user
+*.qmake.stash
+*.qmake.cache
+*.pro.user
+*.user
+*.autosave
