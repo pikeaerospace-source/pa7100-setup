@@ -29,6 +29,9 @@
 ********************************************************************************/
 #include "pa7100_setup_t.h"
 #include "ui_pa7100_setup_t.h"
+#include <QDialog>
+#include <QMessageBox>
+#include <QApplication>
 
 pa7100_setup_t::pa7100_setup_t(QWidget *parent)
     : QMainWindow(parent)
@@ -99,19 +102,32 @@ void pa7100_setup_t::slot_save()
 {
     qDebug() << "save pressed";
     save_params_to_detected(ui->baud_combobox->currentText().toInt(),
-                            ui->id_spinbox->value());
+                            ui->id_spinbox->value(),
+                            ui->option_spinbox->value());
 }
 
 /********************************************************************************
 * @brief Save current parameters to detected device.
 ********************************************************************************/
-void pa7100_setup_t::save_params_to_detected(int baud, int id)
+void pa7100_setup_t::save_params_to_detected(int baud, int id, int option_bits)
 {   
     if ( !detected_uart.isEmpty() && modbus.open(detected_uart,detected_baud,detected_id) == 0 )
     {
-        modbus.write_one_register(PA7100_REG_ADDRESS, id);
-        modbus.write_one_register(PA7100_REG_BAUD, baud / 10);
-
+        if ( modbus.write_one_register(PA7100_REG_ADDRESS, id) )
+        {
+            if ( modbus.write_one_register(PA7100_REG_BAUD, baud / 10) )
+            {
+                if ( modbus.write_one_register(PA7100_REG_OPTION, option_bits) )
+                {
+                    // reset the device to apply changes
+                    if ( modbus.write_one_register(PA7100_REG_FAULT, 0xFFFF) )
+                    {
+                        QMessageBox::information(this, "Parameters Saved",
+                            "Parameters saved successfully.");
+                    }
+                }
+            }
+        }
         modbus.close();
     }
 }
