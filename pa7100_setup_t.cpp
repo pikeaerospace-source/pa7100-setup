@@ -8,6 +8,24 @@
 *                                                                               *
 * Copyright © 2025 Pike Aerospace Research Co.                                  *
 *                                                                               *
+* Permission is hereby granted, free of charge, to any person obtaining a copy  *
+* of this software and associated documentation files (the "Software"), to deal *
+* in the Software without restriction, including without limitation the rights  *
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     *
+* copies of the Software, and to permit persons to whom the Software is         *
+* furnished to do so, subject to the following conditions:                      *
+*                                                                               *          
+* The above copyright notice and this permission notice shall be included in    *
+* all copies or substantial portions of the Software.                           *
+*                                                                               *
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    *
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      *
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   *
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        *
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, *
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE *
+* SOFTWARE.                                                                     *
+*                                                                               *
 ********************************************************************************/
 #include "pa7100_setup_t.h"
 #include "ui_pa7100_setup_t.h"
@@ -80,18 +98,19 @@ void pa7100_setup_t::slot_cancel()
 void pa7100_setup_t::slot_save()
 {
     qDebug() << "save pressed";
-    save_params_to_detected();
+    save_params_to_detected(ui->baud_combobox->currentText().toInt(),
+                            ui->id_spinbox->value());
 }
 
 /********************************************************************************
 * @brief Save current parameters to detected device.
 ********************************************************************************/
-void pa7100_setup_t::save_params_to_detected()
-{
+void pa7100_setup_t::save_params_to_detected(int baud, int id)
+{   
     if ( !detected_uart.isEmpty() && modbus.open(detected_uart,detected_baud,detected_id) == 0 )
     {
-        modbus.write_one_register(PA7100_REG_ADDRESS, detected_id);
-        modbus.write_one_register(PA7100_REG_BAUD, detected_baud / 10);
+        modbus.write_one_register(PA7100_REG_ADDRESS, id);
+        modbus.write_one_register(PA7100_REG_BAUD, baud / 10);
 
         modbus.close();
     }
