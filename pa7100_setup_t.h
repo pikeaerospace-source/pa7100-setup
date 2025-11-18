@@ -53,6 +53,7 @@ private:
     bool detect_auto();
     void detected_clear();
     void display_detected_params();
+    void save_params_to_detected();
 
 };
 #endif // PA7100_SETUP_T_H

@@ -18,9 +18,14 @@ pa7100_setup_t::pa7100_setup_t(QWidget *parent)
     , cancel(false)
 {
     ui->setupUi(this);
+    
     populate_serial_port_combobox(ui->uart_combobox,serial.enumerate_serial_ports());
+    
     ui->baud_combobox->addItems(serial.enumberate_baud_rates());
+    ui->baud_combobox->setCurrentText("9600");
+
     ui->id_spinbox->setValue(1);
+    
     QObject::connect(ui->detect_button,SIGNAL(clicked()),this,SLOT(slot_detect_activated()));
     QObject::connect(ui->cancel_button,SIGNAL(clicked()),this,SLOT(slot_cancel()));
     QObject::connect(ui->save_button,SIGNAL(clicked()),this,SLOT(slot_save()));
@@ -75,6 +80,35 @@ void pa7100_setup_t::slot_cancel()
 void pa7100_setup_t::slot_save()
 {
     qDebug() << "save pressed";
+    save_params_to_detected();
+}
+
+/********************************************************************************
+* @brief Save current parameters to detected device.
+********************************************************************************/
+void pa7100_setup_t::save_params_to_detected()
+{
+    if ( !detected_uart.isEmpty() && modbus.open(detected_uart,detected_baud,detected_id) == 0 )
+    {
+        modbus.write_one_register(PA7100_REG_ADDRESS, detected_id);
+        modbus.write_one_register(PA7100_REG_BAUD, detected_baud / 10);
+
+        modbus.close();
+    }
+}
+
+/********************************************************************************
+* @brief Clear all of the detected state variables.
+********************************************************************************/
+void pa7100_setup_t::detected_clear()
+{
+    detected_baud = 0;
+    detected_id = 0;
+    detected_uart.clear();
+
+    ui->serialno_display->setText("");
+    ui->model_display->setText("");
+    ui->version_display->setText("");
 }
 
 /********************************************************************************
@@ -85,21 +119,27 @@ void pa7100_setup_t::display_detected_params()
     if ( modbus.open(detected_uart,detected_baud,detected_id) == 0 )
     {
         uint16_t version = modbus.read_one_register(PA7100_REG_VERSION);
-        uint16_t model = modbus.read_one_register(PA7100_REG_MODEL_NO);
-
-        QString model_str = QString().asprintf("%d",model);
         QString version_str = QString().asprintf("%d",version>>8)+"."+QString().asprintf("%d",version&0xFF);
+        ui->version_display->setText(version_str);
+        // for(int n=0; n < 1000; n++ )
+            QApplication::processEvents();
+
+        uint16_t model = modbus.read_one_register(PA7100_REG_MODEL_NO);
+        QString model_str = QString().asprintf("%d",model);
+        ui->model_display->setText(model_str);
+        // for(int n=0; n < 1000; n++ )
+            QApplication::processEvents();
 
         QString serial_str;
         for( int serial_idx=0; serial_idx < 6; serial_idx++ )
         {
             uint16_t serial = modbus.read_one_register(PA7100_REG_SERIAL_NO_0+serial_idx);
             serial_str += QString::asprintf("%02X%02X",serial>>8,serial&0xFF);
+            ui->serialno_display->setText(serial_str);
+            // for(int n=0; n < 1000; n++ )
+                QApplication::processEvents();
         }
 
-        ui->serialno_display->setText(serial_str);
-        ui->model_display->setText(model_str);
-        ui->version_display->setText(version_str);
 
         modbus.close();
     }
@@ -222,13 +262,3 @@ bool pa7100_setup_t::detect_auto()
     return false;
 }
 
-void pa7100_setup_t::detected_clear()
-{
-    detected_baud = 0;
-    detected_id = 0;
-    detected_uart.clear();
-
-    ui->serialno_display->setText("");
-    ui->model_display->setText("");
-    ui->version_display->setText("");
-}

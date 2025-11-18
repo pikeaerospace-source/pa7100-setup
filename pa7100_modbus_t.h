@@ -35,11 +35,11 @@
 #define PA7100_REG_RH_100           REGADDR(16) /**< RH*100 */
 #define PA7100_REG_KPA_INTEGER      REGADDR(17) /**< Baro Press in kPa [Integer] */
 #define PA7100_REG_KPA_DECIMAL      REGADDR(18) /**< Baro Press in kPa [Decimal] */
-#define PA7100_REG_TEMPC_F          REGADDR(19) /**< TEMPC Float */
-#define PA7100_REG_TEMPF_F          REGADDR(21) /**< TEMPF Float */
-#define PA7100_REG_RH_F             REGADDR(23) /**< Relatie Humidity % Float */
-#define PA7100_REG_KPA_F            REGADDR(25) /**< Baro Press in kPa Float */
-#define PA7100_REG_HPA_F            REGADDR(27) /**< Baro Press in hPa Float */
+#define PA7100_REG_TEMPC_F          REGADDR(20) /**< TEMPC Float */
+#define PA7100_REG_TEMPF_F          REGADDR(22) /**< TEMPF Float */
+#define PA7100_REG_RH_F             REGADDR(24) /**< Relatie Humidity % Float */
+#define PA7100_REG_KPA_F            REGADDR(26) /**< Baro Press in kPa Float */
+#define PA7100_REG_HPA_F            REGADDR(28) /**< Baro Press in hPa Float */
 
 class pa7100_modbus_t : public QObject
 {
@@ -54,6 +54,8 @@ public:
                     return read_one_register(PA7100_REG_MODEL_NO) ;
                 }
     uint16_t    read_one_register(uint16_t addr);
+    bool        write_one_register(uint16_t addr, uint16_t value);
+
 private:
     modbus_t    *ctx;
 

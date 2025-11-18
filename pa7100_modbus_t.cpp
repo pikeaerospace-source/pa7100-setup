@@ -85,27 +85,61 @@ uint16_t pa7100_modbus_t::read_one_register(uint16_t addr)
 {
     int rc = -1;
     uint16_t value = 0;
+    uint16_t retries=10;
 
-    try {
-        // Read holding register 40003
-        // Note: Modbus register addressing is 0-based, so 40003 becomes 2
-        rc = modbus_read_registers(
-            ctx,           // Modbus context
-            addr,          // Register address
-            1,             // Number of registers to read
-            &value         // Buffer to store read value
-        );
-    } catch (const std::exception& e) {
-        qDebug() << "Exception in Modbus read: " << e.what();
-        value = 0;
-    }
+    while ( rc < 0 && retries-- > 0 )
+    {
+        try {
+            // Read holding register 40003
+            // Note: Modbus register addressing is 0-based, so 40003 becomes 2
+            rc = modbus_read_registers(
+                ctx,           // Modbus context
+                addr,          // Register address
+                1,             // Number of registers to read
+                &value         // Buffer to store read value
+            );
+        } catch (const std::exception& e) {
+            qDebug() << "Exception in Modbus read: " << e.what();
+            value = 0;
+        }
 
-    // Check read operation
-    if (rc == -1) {
-        qDebug() << "Register read failed: "
-                    << modbus_strerror(errno);
-        value = 0;
+        // Check read operation
+        if (rc == -1) {
+            qDebug() << "Register read failed: "
+                        << modbus_strerror(errno);
+            value = 0;
+        }
     }
 
     return value;
 }
+
+/********************************************************************************
+ * @brief Write one register to the device.
+ * @param addr Register address to write.
+ * @param value Value to write to the register.
+ * @return true if the write was successful, false otherwise.
+ ********************************************************************************/
+bool pa7100_modbus_t::write_one_register(uint16_t addr, uint16_t value)
+{
+    int rc = -1;        
+    try {
+        // Write holding register
+        rc = modbus_write_register(
+            ctx,      // Modbus context
+            addr,     // Register address
+            value     // Value to write
+        );
+    } catch (const std::exception& e) {
+        qDebug() << "Exception in Modbus write: " << e.what();
+        return false;
+    }  
+    // Check write operation
+    if (rc == -1) {
+        qDebug() << "Register write failed: "
+                    << modbus_strerror(errno);
+        return false;
+    }
+    return true;
+}
+

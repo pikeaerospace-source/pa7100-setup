@@ -49,6 +49,12 @@
     <property name="editable">
      <bool>false</bool>
     </property>
+    <property name="currentText">
+     <string notr="true"/>
+    </property>
+    <property name="currentIndex">
+     <number>-1</number>
+    </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
