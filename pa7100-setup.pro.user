@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 6.0.2, 2025-11-16T08:17:03. -->
+<!-- Written by QtCreator 6.0.2, 2025-11-18T15:51:27. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -238,8 +238,9 @@
     <valuelist type="QVariantList" key="CustomOutputParsers"/>
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/mike/development/pikeaero/pa/pa7100/qt/pa7100-setup/pa7100-setup.pro</value>
-    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/mike/development/pikeaero/pa/pa7100/qt/pa7100-setup/pa7100-setup.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">pa7100-setup2</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/mike/development/github/pa7100-setup/pa7100-setup.pro</value>
+    <value type="QString" key="ProjectExplorer.RunConfiguration.BuildKey">/home/mike/development/github/pa7100-setup/pa7100-setup.pro</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseLibrarySearchPath">true</value>
